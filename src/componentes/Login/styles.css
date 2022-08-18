@@ -1,0 +1,11 @@
+.layout-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.botao-entrar {
+    background-color: rgb(204, 229, 250) !important;
+    color: black !important;
+}
