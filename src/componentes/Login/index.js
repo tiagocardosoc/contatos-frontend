@@ -10,13 +10,17 @@ import { BsEyeFill, BsEyeSlashFill } from 'react-icons/bs';
 import {CgEnter} from 'react-icons/cg'
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
+import { Alert } from "@mui/material";
+import api from "../../services/Api";
 
 const Login = () => {
 
     const navigate = useNavigate()
 
-    const [usuario, setUsuario] = useState('');
+    const [email, setEmail] = useState('');
+    const [emailInvalido, setEmailInvalido] = useState(false);
     const [senha, setSenha] = useState('');
+    const [senhaInvalida, setSenhaInvalida] = useState(false);
     const [verSenha, setVerSenha] = useState(true)
 
     const handleChangeVerSenha = () => {
@@ -27,9 +31,41 @@ const Login = () => {
         }
     }
 
-    const autorizarEntrada = () => {
-        navigate('/home')
+    const botaoEntrar = async () => {
+
+        if (email === undefined || email === '') {
+            setEmailInvalido(true);
+            return (
+                <Alert severity="error"> 
+                    Email inválido.
+                </Alert>
+            )   
+        } 
+
+        if (senha === undefined || senha === '') {
+            setSenhaInvalida(true);
+            return (
+                <Alert severity="error"> 
+                    Senha inválida.
+                </Alert>
+            )
+        }
+
+        try {
+
+            const resposta = await api.post('/login-usuario', {email, senha});
+
+            console.log(resposta)
+            
+
+        } catch(erro) {
+
+        }
     }
+
+    // const autorizarEntrada = () => {
+    //     navigate('/home')
+    // }
 
     return (
         <div>
@@ -41,10 +77,11 @@ const Login = () => {
                         </Grid>
                         <Grid container flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
                             <TextField
-                                value={usuario}
+                                value={email}
                                 label="Usuário"
                                 required
                                 variant="outlined"
+                                onChange={(e) => {setEmail(e.target.value)}}
                                 size="small"
                                 style={{
                                     width: '70%',
@@ -56,6 +93,7 @@ const Login = () => {
                                 type={verSenha ? "password" : "text"}
                                 required
                                 variant="outlined"
+                                onChange={(e) => {setSenha(e.target.value)}}
                                 size="small"
                                 InputProps={{
                                     endAdornment: (
@@ -75,7 +113,7 @@ const Login = () => {
                             />
                         </Grid>
                         <Grid container justifyContent={'center'}>
-                            <Button className="botao-entrar" variant="contained" endIcon={<CgEnter />} onClick={() => autorizarEntrada()}>
+                            <Button className="botao-entrar" variant="contained" endIcon={<CgEnter />} onClick={() => botaoEntrar()}>
                                 Entrar
                             </Button>
                         </Grid>
