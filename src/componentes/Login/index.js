@@ -12,10 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import "./styles.css";
 import { Alert } from "@mui/material";
 import api from "../../services/Api";
-import { getToken, setToken } from "../../services/Authentication";
-
-
-const axios = require('axios');
+import { setToken } from "../../services/Authentication";
 
 const Login = () => {
   const navigate = useNavigate()
@@ -59,9 +56,13 @@ const Login = () => {
 
     try {
         const resposta = await api.post('/login-usuario', {email, senha});
+
         if (resposta.status === 200) {
             setToken(resposta.data.token);
-            navigate('/home');
+
+            if(resposta.data.token) {
+              navigate('/home')
+            }
         }
     } catch(erro) {
         console.log(erro)

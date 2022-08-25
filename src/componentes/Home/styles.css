@@ -19,7 +19,8 @@
     margin-top: 50px;
     margin-right: 50px;
     margin-left: 50px;
-    height: 70vh;
+    padding-bottom: 10px;
+    height: auto;
     background-color: #faf7f9;
     border-radius: 10px;
     border-style: hidden;
@@ -44,4 +45,22 @@
     border: 1px;
     border-style: solid;
     color: rgb(203, 218, 231);
+}
+
+.div-conteudo-map {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.grid-botao-adicionar {
+    margin-bottom: 0px;
+}
+
+@media only screen and (max-width: 600px) {
+    .grid-botao-adicionar {
+        padding-bottom: 20px;
+    }
 }

@@ -1,20 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import api from "../../services/Api";
 import "./styles.css";
 import PopUpAdicionarContato from "./Componentes/PopUpCadastrar";
 import CardContatos from "./Componentes/CardContatos";
-import { Card, CardContent } from "@mui/material";
 
 const Home = () => {
-
-  const [contatos, setContatos] = useState([]);
   const [abrirPopUp, setAbrirPopUp] = useState(false);
+  const [contatos, setContatos] = useState([]);
 
   useEffect(() => {
-  
-  })
+    const listarContatos = async () => {
+      const resultado = await api.get("/listar-contatos");
+
+      if (resultado.status === 200) {
+        setContatos(resultado.data.contatos);
+      }
+    }
+    listarContatos();
+  }, [])
+
+
 
   return (
     <div className="div-container">
@@ -29,44 +36,48 @@ const Home = () => {
           justifyContent={"center"}
           sx={{ paddingTop: "10px" }}
         >
-          <Grid container item xs={8} justifyContent={"center"}>
+          <Grid container item xs={12} sm={6} justifyContent={"center"}>
             <p className="titulo-lista">Lista de Contatos</p>
           </Grid>
           <Grid
+            className="grid-botao-adicionar"
             container
             item
-            xs={4}
+            xs={12} sm={6}
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <Button className="botao-adicionar" variant="contained" onClick={() => setAbrirPopUp(true)}>
+            <Button
+              className="botao-adicionar"
+              variant="contained"
+              onClick={() => setAbrirPopUp(true)}
+            >
               Adicionar contato
             </Button>
 
-            <PopUpAdicionarContato 
+            <PopUpAdicionarContato
               abrirPopUp={abrirPopUp}
               setAbrirPopUp={setAbrirPopUp}
+              setContatos={setContatos}
             />
-
           </Grid>
         </Grid>
 
         <div className="divider"></div>
 
-        {/* {
-          contatos.map((contato, index) => {
+        {
+          contatos.map((contatos, index) => {
               return (
-                <Grid container sx={{mx: 3, my: 4}}>
+                <div className="div-conteudo-map" key={index}>
                   <CardContatos 
-                    index={index}
-                    contato={contato}
+                    contatos={contatos}
+                    setContatos={setContatos}
                   />
-                </Grid>
+                </div>
               )
           })
-        } */}
+        }
         
-
       </div>
     </div>
   );

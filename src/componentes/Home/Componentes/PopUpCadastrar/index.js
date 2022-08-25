@@ -5,41 +5,42 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
-import { Alert, Grid, TextField } from "@mui/material";
+import { Alert, AlertTitle, Grid, TextField } from "@mui/material";
 import "./styles.css";
 import api from "../../../../services/Api";
 
-const PopUpAdicionarContato = ({ abrirPopUp, setAbrirPopUp }) => {
+const PopUpAdicionarContato = ({ abrirPopUp, setAbrirPopUp, setContatos }) => {
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
   const [endereco, setEndereco] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
-  const [mensagemErro, setMensagemErro] = useState("");
+  const [mensagemErro, setMensagemErro] = useState(false);
 
   const clickCadastrarContato = () => {
     if (nome === "" || nome === undefined) {
-      setMensagemErro("O nome precisa ser preenchido.");
+      setMensagemErro(true);
     }
     if (sobrenome === "" || sobrenome === undefined) {
-      setMensagemErro("O sobrenome precisa ser preenchido.");
+      setMensagemErro(true);
     }
     if (telefone === "" || telefone === undefined) {
-      setMensagemErro("O telefone precisa ser preenchido.");
+      setMensagemErro(true);
     }
     if (email === "" || email === undefined) {
-      setMensagemErro("O email precisa ser preenchido.");
+      setMensagemErro(true);
     }
     if (endereco === "" || endereco === undefined) {
-      setMensagemErro("O endereco precisa ser preenchido.");
+      setMensagemErro(true);
     }
     if (dataNascimento === "" || dataNascimento === undefined) {
-      setMensagemErro("A data de nascimento precisa ser preenchida.");
+      setMensagemErro(true);
     }
 
     const efetuarCadastro = async () => {
       try {
+
         const resultado = await api.post("/cadastrar-contato", {
           nome,
           sobrenome,
@@ -49,10 +50,28 @@ const PopUpAdicionarContato = ({ abrirPopUp, setAbrirPopUp }) => {
           email,
         });
         if (resultado.status === 200) {
-          Alert("O cadastro foi efetuado com sucesso");
-          setAbrirPopUp(false);
+          const listarContatos = async () => {
+            const resultado = await api.get("/listar-contatos");
+      
+            if (resultado.status === 200) {
+              setContatos(resultado.data.contatos);
+            }
+          }
+          listarContatos();
+          setAbrirPopUp(false);          
+           return (
+           <Alert severity="success">
+            <AlertTitle>Sucesso</AlertTitle>
+            O cadastro foi efetuado com sucesso.
+          </Alert>
+          );
         } else {
-          Alert("O cadastro não pode ser efetuado, tente novamente.");
+          return (
+          <Alert severity="error">
+            <AlertTitle>Erro</AlertTitle>
+            O cadastro não pôde ser concluído, tente novamente.
+          </Alert>
+          )
         }
       } catch (erro) {
         console.log(erro);
@@ -79,24 +98,26 @@ const PopUpAdicionarContato = ({ abrirPopUp, setAbrirPopUp }) => {
           xs={12}
           justifyContent={"center"}
           alignItems={"center"}
-          spacing={2}
+          spacing={1}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              margin="normal"
+              style={{marginBottom:'20px'}}
               size="small"
               label="Nome"
               onChange={(e) => setNome(e.target.value)}
+              error={mensagemErro}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              margin="normal"
+              style={{marginBottom:'20px'}}
               size="small"
               label="Sobrenome"
               onChange={(e) => setSobrenome(e.target.value)}
+              error={mensagemErro}
             />
           </Grid>
         </Grid>
@@ -106,19 +127,27 @@ const PopUpAdicionarContato = ({ abrirPopUp, setAbrirPopUp }) => {
           xs={12}
           justifyContent={"center"}
           alignItems={"center"}
-          spacing={2}
+          spacing={1}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              margin="normal"
+              style={{marginBottom:'20px'}}
               size="small"
               label="Telefone"
               onChange={(e) => setTelefone(e.target.value)}
+              error={mensagemErro}
             />
           </Grid>
-          <Grid item xs={6}>
-            <TextField fullWidth margin="normal" size="small" label="Email" />
+          <Grid item xs={12} sm={6}>
+            <TextField 
+              fullWidth
+              style={{marginBottom:'20px'}}
+              size="small"
+              label="Email"
+              onChange={(e) => setEmail(e.target.value)}
+              error={mensagemErro}
+                />
           </Grid>
         </Grid>
         <Grid
@@ -127,24 +156,26 @@ const PopUpAdicionarContato = ({ abrirPopUp, setAbrirPopUp }) => {
           xs={12}
           justifyContent={"center"}
           alignItems={"center"}
-          spacing={2}
+          spacing={1}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              margin="normal"
+              style={{marginBottom:'20px'}}
               size="small"
               label="Endereço"
               onChange={(e) => setEndereco(e.target.value)}
+              error={mensagemErro}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              margin="normal"
+              style={{marginBottom:'20px'}}
               size="small"
               label="Data de nascimento"
               onChange={(e) => setDataNascimento(e.target.value)}
+              error={mensagemErro}
             />
           </Grid>
         </Grid>
